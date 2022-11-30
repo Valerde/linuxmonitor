@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--    <meta http-equiv="refresh" content="10">-->
+    <title>检测网页</title>
+
+    <style>
+        /* CSS Document */
+        .tabtop13 {
+            margin-top: 13px;
+        }
+
+        .tabtop13 td {
+            background-color: #ffffff;
+            height: 25px;
+            line-height: 150%;
+        }
+
+        .font-center {
+            text-align: center
+        }
+
+        .btbg {
+            background: #e9faff !important;
+        }
+
+        .btbg1 {
+            background: #f2fbfe !important;
+        }
+
+        .btbg2 {
+            background: #f3f3f3 !important;
+        }
+
+        .biaoti {
+            font-family: 微软雅黑;
+            font-size: 26px;
+            font-weight: bold;
+            border-bottom: 1px dashed #CCCCCC;
+            color: #255e95;
+        }
+
+        .titfont {
+
+            font-family: 微软雅黑;
+            font-size: 16px;
+            font-weight: bold;
+            color: #255e95;
+            /*background: url(../images/ico3.gif) no-repeat 15px center;*/
+            background-color: #e9faff;
+        }
+
+        .tabtxt2 {
+            font-family: 微软雅黑;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: right;
+            padding-right: 10px;
+            color: #327cd1;
+        }
+
+        .tabtxt3 {
+            font-family: 微软雅黑;
+            font-size: 14px;
+            padding-left: 15px;
+            color: #000;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            line-height: 20px;
+        }
+
+    </style>
+    <script>
+        var httpRequest1, httpRequest2;
+
+        function makeRequest1() {
+            // makeRequest2();
+
+            //定时5秒执行
+            setInterval(function () {
+                makeRequest2();
+            }, 5000);
+
+
+            httpRequest1 = new XMLHttpRequest();
+
+            if (!httpRequest1) {
+                alert('Giving up :( Cannot create an XMLHTTP instance');
+                return false;
+            }
+            httpRequest1.onreadystatechange = alertContents1;
+            httpRequest1.open('GET', 'http://monitor.sovava.com/monitor/sysinfo');
+            httpRequest1.send();
+            document.querySelector("#cpuModel").innerText = "等待返回...";
+            document.querySelector("#cpuNum").innerText = "等待返回...";
+            document.querySelector("#cpuPerCore").innerText = "等待返回...";
+            document.querySelector("#systemDays").innerText = "等待返回...";
+            document.querySelector("#systemRelease").innerText = "等待返回...";
+            document.querySelector("#systemVersion").innerText = "等待返回...";
+            document.querySelector("#passFileInfo").innerText = "等待返回...";
+        }
+
+        function makeRequest2() {
+
+            httpRequest2 = new XMLHttpRequest();
+
+            if (!httpRequest2) {
+                alert('Giving up :( Cannot create an XMLHTTP instance');
+                return false;
+            }
+            httpRequest2.onreadystatechange = alertContents2;
+            httpRequest2.open('GET', 'http://monitor.sovava.com/monitor/all');
+            httpRequest2.send();
+
+
+        }
+
+        function alertContents1() {
+            if (httpRequest1.readyState === XMLHttpRequest.DONE) {
+                if (httpRequest1.status === 200) {
+                    // document.querySelector("#rtnText").innerText=httpRequest1.responseText;
+                    let message = JSON.parse(httpRequest1.responseText);
+                    // console.log(message);
+                    if (message.code !== 0) {
+                        alert('获取信息失败！');
+                        return;
+                    }
+                    let msg0 = "", msg1 = "", msg2 = "", msg3 = "", msg4 = "", msg5 = "", msg6 = "";
+                    msg0 = message.sys.cpuModel;
+                    msg1 = message.sys.cpuNum;
+                    console.log(msg1);
+                    msg2 = message.sys.cpuPerCore;
+                    msg3 = message.sys.systemDays;
+                    msg4 = message.sys.systemRelease;
+                    msg5 = message.sys.systemVersion;
+                    msg6 = message.sys.passFileInfo;
+
+                    document.querySelector("#cpuModel").innerText = msg0;
+                    document.querySelector("#cpuNum").innerText = msg1;
+                    document.querySelector("#cpuPerCore").innerText = msg2;
+                    document.querySelector("#systemDays").innerText = msg3;
+                    document.querySelector("#systemRelease").innerText = msg4;
+                    document.querySelector("#systemVersion").innerText = msg5;
+                    document.querySelector("#passFileInfo").innerText = msg6;
+
+
+                } else {
+                    alert('There was a problem with the request.');
+                }
+            }
+        }
+
+        function alertContents2() {
+            if (httpRequest2.readyState === XMLHttpRequest.DONE) {
+                if (httpRequest2.status === 200) {
+                    // document.querySelector("#rtnText").innerText=httpRequest1.responseText;
+                    let message = JSON.parse(httpRequest2.responseText);
+                    console.log(message);
+                    if (message.code !== 0) {
+                        alert('获取信息失败！');
+                        return;
+                    }
+
+                    // TODO 万家乐看这里
+
+
+                    document.querySelector("#user").innerText = message.data.cpuState.user;
+                    document.querySelector("#sys").innerText = message.data.cpuState.sys;
+                    document.querySelector("#idle").innerText = message.data.cpuState.idle;
+                    document.querySelector("#iowait").innerText = message.data.cpuState.iowait;
+                    document.querySelector("#irq").innerText = message.data.cpuState.irq;
+                    document.querySelector("#soft").innerText = message.data.cpuState.soft;
+
+                    document.querySelector("#size").innerText = message.data.deskState.size;
+                    document.querySelector("#used1").innerText = message.data.deskState.used;
+                    document.querySelector("#usePerDesk").innerText = message.data.deskState.usePer;
+
+                    document.querySelector("#rs").innerText = message.data.diskIoState.rs;
+                    document.querySelector("#ws").innerText = message.data.diskIoState.ws;
+                    document.querySelector("#rkBS").innerText = message.data.diskIoState.rkBS;
+                    document.querySelector("#wkBS").innerText = message.data.diskIoState.wkBS;
+                    document.querySelector("#await").innerText = message.data.diskIoState.await;
+                    document.querySelector("#avgquSz").innerText = message.data.diskIoState.avgquSz;
+                    document.querySelector("#util").innerText = message.data.diskIoState.util;
+
+                    document.querySelector("#total").innerText = message.data.memState.total;
+                    document.querySelector("#used").innerText = message.data.memState.used;
+                    document.querySelector("#free").innerText = message.data.memState.free;
+                    document.querySelector("#usePer").innerText = message.data.memState.usePer;
+
+                    document.querySelector("#rxpck").innerText = message.data.netIoState.rxpck;
+                    document.querySelector("#txpck").innerText = message.data.netIoState.txpck;
+                    document.querySelector("#rxbyt").innerText = message.data.netIoState.rxbyt;
+                    document.querySelector("#txbyt").innerText = message.data.netIoState.txbyt;
+                    document.querySelector("#rxcmp").innerText = message.data.netIoState.rxcmp;
+                    document.querySelector("#txcmp").innerText = message.data.netIoState.txcmp;
+
+                    document.querySelector("#oneLoad").innerText = message.data.sysLoadState.oneLoad;
+                    document.querySelector("#fiveLoad").innerText = message.data.sysLoadState.fiveLoad;
+                    document.querySelector("#fifteenLoad").innerText = message.data.sysLoadState.fifteenLoad;
+                    document.querySelector("#users").innerText = message.data.sysLoadState.users;
+
+                    document.querySelector("#active").innerText = message.data.tcpState.active;
+                    document.querySelector("#passive").innerText = message.data.tcpState.passive;
+                    document.querySelector("#isegs").innerText = message.data.tcpState.isegs;
+                    document.querySelector("#oseg").innerText = message.data.tcpState.oseg;
+
+
+                } else {
+                    alert('There was a problem with the request.');
+                }
+            }
+        }
+
+        setInterval(function () {
+            // makeRequest2();
+            let date = new Date();
+            document.getElementById("demo").innerHTML = date;
+        }, 1000);
+    </script>
+</head>
+<body onload="makeRequest1()">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+    <tr>
+        <td align="center" class="biaoti" height="60">linux实时监测</td>
+    </tr>
+    <tr>
+        <td align="right" height="25">2022年11月</td>
+    </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="4" bgcolor="#cccccc" class="tabtop13" align="center">
+    <tr>
+        <td colspan="2" class="btbg font-center titfont"></td>
+        <td colspan="7" class="btbg font-center titfont">CPU</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">cpuModel</td>
+        <td id="cpuModel">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="btbg2 font-center">cpuNum</td>
+        <td id="cpuNum">&nbsp;</td>
+
+    </tr>
+    <tr>
+        <td colspan="2" class="btbg2 font-center">cpuPerCore</td>
+        <td id="cpuPerCore">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="btbg2 font-center">SystemRunningTime</td>
+        <td id="systemDays">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="btbg2 font-center">SystemRelease</td>
+        <td id="systemRelease">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="btbg2 font-center">SystemVersion</td>
+        <td id="systemVersion">&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="btbg2 font-center">passFileInfo</td>
+        <td id="passFileInfo">&nbsp;</td>
+    </tr>
+</table>
+<table width="100%" border="0" cellspacing="1" cellpadding="4" bgcolor="#cccccc" class="tabtop13" align="center">
+    <tr>
+        <td colspan="2" class="btbg font-center titfont"></td>
+        <td colspan="7" class="btbg font-center titfont">内存</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">cpuState</td>
+        <td colspan="2" class="btbg3" align="center">用户态的CPU时间（%）</td>
+        <td class="btbg3" align="center">系统（内核）时间（%）</td>
+        <td class="btbg3" align="center">空闲时间（idle）（%）</td>
+        <td class="btbg3" align="center">IO等待时间（wait）(%)</td>
+        <td class="btbg3" align="center">硬中断时间（%）</td>
+        <td class="btbg3" align="center">软中断时间（%）)</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">data</td>
+        <td colspan="2" id="user" align="center">&nbsp;</td>
+        <td id="sys" align="center">&nbsp;</td>
+        <td id="idle" align="center">&nbsp;</td>
+        <td id="iowait" align="center">&nbsp;</td>
+        <td id="irq" align="center">&nbsp;</td>
+        <td id="soft" align="center">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">deskState</td>
+        <td colspan="2" class="btbg3" align="center">分区大小（GB）</td>
+        <td colspan="2" class="btbg3" align="center">已使用（GB）</td>
+        <td colspan="3" class="btbg3" align="center">已使用百分比（%）</td>
+    </tr>
+
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">data</td>
+        <td colspan="2" id="size" align="center">&nbsp;</td>
+        <td colspan="2" id="used1" align="center">&nbsp;</td>
+        <td colspan="3" id="usePerDesk" align="center">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">diskIoState</td>
+        <td class="btbg3" align="center">每秒读次数</td>
+        <td class="btbg3" align="center">每秒写次数</td>
+        <td class="btbg3" align="center">rkBS（千字节）</td>
+        <td class="btbg3" align="center">wkBS（千字节）</td>
+        <td class="btbg3" align="center">IO操作的平均等待时间（ms）</td>
+        <td class="btbg3" align="center">avgquSz（向设备发出的请求平均数量）</td>
+        <td class="btbg3" align="center">util（设备利用率）</td>
+    </tr>
+
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">data</td>
+        <td id="rs" align="center">&nbsp;</td>
+        <td id="ws" align="center">&nbsp;</td>
+        <td id="rkBS" align="center">&nbsp;</td>
+        <td id="wkBS" align="center">&nbsp;</td>
+        <td id="await" align="center">&nbsp;</td>
+        <td id="avgquSz" align="center">&nbsp;</td>
+        <td id="util" align="center">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">memState</td>
+        <td colspan="2" class="btbg3" align="center">总计内存（MB）</td>
+        <td colspan="2" class="btbg3" align="center">已使用内存（MB）</td>
+        <td colspan="2" class="btbg3" align="center">未使用内存（MB）</td>
+        <td colspan="1" class="btbg3" align="center">已使用百分比（%）</td>
+    </tr>
+
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">data</td>
+        <td colspan="2" id="total" align="center">&nbsp;</td>
+        <td colspan="2" id="used" align="center">&nbsp;</td>
+        <td colspan="2" id="free" align="center">&nbsp;</td>
+        <td colspan="1" id="usePer" align="center">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">netIoState</td>
+        <td colspan="2" class="btbg3" align="center">rxpck（每秒钟接收的数据包）</td>
+        <td class="btbg3" align="center">txpck（每秒钟发送的数据包）</td>
+        <td class="btbg3" align="center">rxbyt（每秒钟接收的KB数）</td>
+        <td class="btbg3" align="center">txbyt（每秒钟发送的KB数）</td>
+        <td class="btbg3" align="center">rxcmp（每秒钟接收的压缩数据包）</td>
+        <td class="btbg3" align="center">txcmp（每秒钟发送的压缩数据包）</td>
+    </tr>
+
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">data</td>
+        <td colspan="2" id="rxpck" align="center">&nbsp;</td>
+        <td id="txpck" align="center">&nbsp;</td>
+        <td id="rxbyt" align="center">&nbsp;</td>
+        <td id="txbyt" align="center">&nbsp;</td>
+        <td id="rxcmp" align="center">&nbsp;</td>
+        <td id="txcmp" align="center">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">sysLoadState</td>
+        <td colspan="2" class="btbg3" align="center">1分钟之前到现在的负载</td>
+        <td colspan="2" class="btbg3" align="center">5分钟之前到现在的负载</td>
+        <td colspan="2" class="btbg3" align="center">15分钟之前到现在的负载</td>
+        <td colspan="1" class="btbg3" align="center">登陆用户数</td>
+    </tr>
+
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">data</td>
+        <td colspan="2" id="oneLoad" align="center">&nbsp;</td>
+        <td colspan="2" id="fiveLoad" align="center">&nbsp;</td>
+        <td colspan="2" id="fifteenLoad" align="center">&nbsp;</td>
+        <td colspan="1" id="users" align="center">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">tcpState</td>
+        <td colspan="2" class="btbg3" align="center">active（每秒本地发起的TCP连接数）</td>
+        <td colspan="2" class="btbg3" align="center">passive（每秒远程发起的TCP连接数）</td>
+        <td colspan="2" class="btbg3" align="center">isegs（每秒接受的段）</td>
+        <td colspan="1" class="btbg3" align="center">oseg（每秒发送的段）</td>
+    </tr>
+
+    <tr>
+        <td width="20%" colspan="2" class="btbg2 font-center">data</td>
+        <td colspan="2" id="active" align="center">&nbsp;</td>
+        <td colspan="2" id="passive" align="center">&nbsp;</td>
+        <td colspan="2" id="isegs" align="center">&nbsp;</td>
+        <td colspan="1" id="oseg" align="center">&nbsp;</td>
+    </tr>
+</table>
+
+
+<p id="demo"></p>
+
+
+</body>
+</html>
