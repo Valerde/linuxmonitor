@@ -1,6 +1,5 @@
 package com.sovava.pojo;
 
-import com.sovava.utils.HostUtils;
 import lombok.Data;
 
 @Data

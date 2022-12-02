@@ -5,11 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 
-* <p>Title:CpuState </p>
-* <p>Description: 查看CPU使用情况</p>
-* @author yxz
-* @date Jul 24, 2017
+ * 查看CPU情况
  */
 @Data
 public class CpuState implements Serializable{

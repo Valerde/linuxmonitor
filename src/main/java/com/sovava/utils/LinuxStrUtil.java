@@ -19,9 +19,6 @@ import static java.lang.Double.parseDouble;
 /**
  * <p>Title:LinuxStrUtil </p>
  * <p>Description: 处理linux命令执行后，返回的结果字符串</p>
- *
- * @author yxz
- * @date Jul 24, 2017
  */
 public class LinuxStrUtil {
 
@@ -198,7 +195,7 @@ public class LinuxStrUtil {
         for (int i = 1; i < rows.length; i++) {
             row = FormatUtil.replaceKg(rows[i]);
             cols = row.split(StaticKeys.SPLIT_KG);
-            if (cols[0].contains(":") && (cols[1].contains("ens")||cols[1].contains("eth"))) {
+            if (cols[0].contains(":") && (cols[1].contains("ens") || cols[1].contains("eth"))) {
                 rxpck = parseDouble(cols[2].trim()) + rxpck;
                 txpck = parseDouble(cols[3].trim()) + txpck;
                 rxbyt = parseDouble(cols[4].trim()) + rxbyt;

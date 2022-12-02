@@ -5,11 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 
-* <p>Title:DiskIoState </p>
-* <p>Description: 查看磁盘IO使用情况</p>
-* @author yxz
-* @date Jul 24, 2017
+ * 查看IO情况
  */
 @Data
 public class DiskIoState implements Serializable{

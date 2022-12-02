@@ -3,20 +3,13 @@ package com.sovava;
 
 import com.sovava.utils.HostUtils;
 
-/**
- * <p>Title:Test </p>
- * <p>Description:测试用例 </p>
- *
- * @author yxz
- * @date Jul 24, 2017
- */
+
 public class Test {
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-        // TO DO Auto-generated method stub
 
 //        System.out.println("CPU型号信息：" + HostUtils.getCpuModel());
 //        System.out.println("物理CPU个数：" + HostUtils.getCpuNum());

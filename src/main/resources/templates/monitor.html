@@ -74,8 +74,12 @@
     </style>
     <script>
         var httpRequest1, httpRequest2;
+        console.log(document.URL);
+        var ip = document.URL.split(":")[1];
+        console.log(ip);
 
         function makeRequest1() {
+
             // makeRequest2();
 
             //定时5秒执行
@@ -91,7 +95,7 @@
                 return false;
             }
             httpRequest1.onreadystatechange = alertContents1;
-            httpRequest1.open('GET', 'http://monitor.sovava.com/monitor/sysinfo');
+            httpRequest1.open('GET', 'http:' + ip + ':456/monitor/sysinfo');
             httpRequest1.send();
             document.querySelector("#cpuModel").innerText = "等待返回...";
             document.querySelector("#cpuNum").innerText = "等待返回...";
@@ -111,10 +115,8 @@
                 return false;
             }
             httpRequest2.onreadystatechange = alertContents2;
-            httpRequest2.open('GET', 'http://monitor.sovava.com/monitor/all');
+            httpRequest2.open('GET', 'http:' + ip + ':456/monitor/all');
             httpRequest2.send();
-
-
         }
 
         function alertContents1() {

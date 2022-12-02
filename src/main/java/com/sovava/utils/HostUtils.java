@@ -9,9 +9,6 @@ import org.springframework.util.StringUtils;
 /**
  * <p>Title:HostUtils </p>
  * <p>Description: 获取服务器信息的工具类</p>
- *
- * @author yxz
- * @date Jul 24, 2017
  */
 public class HostUtils {
 

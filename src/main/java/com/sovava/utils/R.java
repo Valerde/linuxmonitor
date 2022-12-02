@@ -10,6 +10,7 @@ package com.sovava.utils;
 
 //import com.alibaba.fastjson.JSON;
 //import com.alibaba.fastjson.TypeReference;
+
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import org.apache.hc.core5.http.HttpStatus;
@@ -20,8 +21,6 @@ import java.util.Map;
 
 /**
  * 返回数据
- *
- * @author Mark sunlightcs@gmail.com
  */
 public class R extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
@@ -38,7 +37,8 @@ public class R extends HashMap<String, Object> {
         T t = JSON.parseObject(jsonString, typeReference);
         return t;
     }
-    public <T> T getData(String key,TypeReference<T> typeReference) {
+
+    public <T> T getData(String key, TypeReference<T> typeReference) {
         //利用fastjson进行逆转
         Object data = this.get(key);
         String jsonString = JSON.toJSONString(data);
