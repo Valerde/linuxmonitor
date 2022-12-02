@@ -15,6 +15,5 @@ public class StaticKeys {
 
     public static String SPLIT_SXG = "//";//双反斜杠
 
-    public static String MAC = "";//本机mac地址
 
 }

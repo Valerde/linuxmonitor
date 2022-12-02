@@ -65,13 +65,15 @@ public class MonitorController {
     public R getAll() {
 
 
-        AllState allState =monitorService.getAll();
+        AllState allState = monitorService.getAll();
+        log.debug("所有的资源信息为：{}", allState.toString());
         return R.ok().setData(allState);
     }
 
     @GetMapping("/sysinfo")
     public R getSystemInfo() {
         SystemInfo systemInfo = monitorService.getSystemInfo();
+        log.debug("所有的系统信息为：{}", systemInfo.toString());
         return R.ok().put("sys", systemInfo);
 
     }

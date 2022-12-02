@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--    <meta http-equiv="refresh" content="10">-->
-    <title>检测网页</title>
+    <title>监控界面</title>
 
     <style>
         /* CSS Document */
@@ -26,9 +25,6 @@
             background: #e9faff !important;
         }
 
-        .btbg1 {
-            background: #f2fbfe !important;
-        }
 
         .btbg2 {
             background: #f3f3f3 !important;
@@ -48,39 +44,18 @@
             font-size: 16px;
             font-weight: bold;
             color: #255e95;
-            /*background: url(../images/ico3.gif) no-repeat 15px center;*/
             background-color: #e9faff;
-        }
-
-        .tabtxt2 {
-            font-family: 微软雅黑;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: right;
-            padding-right: 10px;
-            color: #327cd1;
-        }
-
-        .tabtxt3 {
-            font-family: 微软雅黑;
-            font-size: 14px;
-            padding-left: 15px;
-            color: #000;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            line-height: 20px;
         }
 
     </style>
     <script>
         var httpRequest1, httpRequest2;
-        console.log(document.URL);
+        // console.log(document.URL);
         var ip = document.URL.split(":")[1];
-        console.log(ip);
+
+        // console.log(ip);
 
         function makeRequest1() {
-
-            // makeRequest2();
 
             //定时5秒执行
             setInterval(function () {
@@ -122,7 +97,6 @@
         function alertContents1() {
             if (httpRequest1.readyState === XMLHttpRequest.DONE) {
                 if (httpRequest1.status === 200) {
-                    // document.querySelector("#rtnText").innerText=httpRequest1.responseText;
                     let message = JSON.parse(httpRequest1.responseText);
                     // console.log(message);
                     if (message.code !== 0) {
@@ -157,16 +131,12 @@
         function alertContents2() {
             if (httpRequest2.readyState === XMLHttpRequest.DONE) {
                 if (httpRequest2.status === 200) {
-                    // document.querySelector("#rtnText").innerText=httpRequest1.responseText;
                     let message = JSON.parse(httpRequest2.responseText);
                     console.log(message);
                     if (message.code !== 0) {
                         alert('获取信息失败！');
                         return;
                     }
-
-                    // TODO 万家乐看这里
-
 
                     document.querySelector("#user").innerText = message.data.cpuState.user;
                     document.querySelector("#sys").innerText = message.data.cpuState.sys;
@@ -217,9 +187,7 @@
         }
 
         setInterval(function () {
-            // makeRequest2();
-            let date = new Date();
-            document.getElementById("demo").innerHTML = date;
+            document.getElementById("demo").innerHTML = Date();
         }, 1000);
     </script>
 </head>

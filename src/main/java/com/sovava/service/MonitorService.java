@@ -22,4 +22,18 @@ public interface MonitorService {
     SystemInfo getSystemInfo();
 
     AllState getAll();
+
+    String getSystemRelease();
+
+    String getSystemUname();
+
+    String getCpuNum();
+
+    String getCpuPerCores();
+
+    String getSystemDays();
+
+    String getCpuModel();
+
+    String getPasswdFileInfo();
 }

@@ -41,16 +41,13 @@ public class LinuxCmd {
 
     //根据PID查看进程状态
     public static final String dd = "ps aux|head -1;ps aux|grep {pid}";
-
-    public static final String rpcinfo = "rpcinfo -p";//看rpc服务开放
-
-    public static final String lsmod = "lsmod";//检查系统内核模块
-
-    public static final String passwd_update_time = "ls -l /etc/passwd";//查看passwd文件修改时间
-
-    public static final String crontab = "cat /etc/crontab";//查看计划任务
-
-    public static final String promisc = "ip link | grep promisc";//检查网络：ip link | grep PROMISC（正常网卡不该在promisc模式，可能存在sniffer）
-
+    //看rpc服务开放
+    public static final String rpcinfo = "rpcinfo -p";
+    //检查系统内核模块
+    public static final String lsmod = "lsmod";
+    //查看passwd文件修改时间
+    public static final String passwd_update_time = "ls -l /etc/passwd";
+    //查看计划任务
+    public static final String crontab = "cat /etc/crontab";
 
 }
