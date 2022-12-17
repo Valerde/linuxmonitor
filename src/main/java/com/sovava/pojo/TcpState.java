@@ -11,7 +11,6 @@ import java.io.Serializable;
 @Data
 public class TcpState implements Serializable {
 
-    private static final long serialVersionUID = -299667815095138020L;
 
 
     /**

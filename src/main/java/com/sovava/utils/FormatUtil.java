@@ -12,55 +12,6 @@ import java.util.regex.Pattern;
  */
 public class FormatUtil {
 
-
-    /**
-     * 对字串进行处理，防止空字串产生错误
-     *
-     * @param String
-     * @return String 格式化后的字串
-     */
-    public static String formatNullString(String str) {
-        if (str == null || str.trim().equals("")) {
-            str = "";
-        }
-        return str;
-    }
-
-
-    /**
-     * 如果字符串为空，设成默认值
-     *
-     * @param String 字符串
-     * @param String 默认字符串
-     * @return String 格式化后的字串
-     */
-    public static String formatNullString(String str, String defaultStr) {
-        if (str == null || str.trim().equals("")) {
-            str = defaultStr;
-        }
-        return str;
-    }
-
-
-    /**
-     * 判断是否是数字
-     *
-     * @param String 字符串
-     * @return boolean
-     */
-    public static boolean isNumeric(String str) {
-        if (str != null && !"".equals(str) && !str.startsWith("0")) {
-            for (int i = str.length(); --i >= 0; ) {
-                int chr = str.charAt(i);
-                if (chr < 48 || chr > 57)
-                    return false;
-            }
-            return true;
-        } else
-            return false;
-    }
-
-
     /**
      * 将字符串中的多个空格，替换成一个
      *
@@ -84,21 +35,16 @@ public class FormatUtil {
         double result = 0;
         double mod = 1024;
         if (str.contains("M")) {
-//    		int f = Integer.parseInt(str.replace("M", ""));
             int f = new BigDecimal(str.replace("M", "")).intValue();
             result = f / mod;
         } else if (str.contains("K")) {
-//    		int f = Integer.parseInt(str.replace("K", ""));
             int f = new BigDecimal(str.replace("K", "")).intValue();
             result = (f / mod) / mod;
         } else if (str.contains("T")) {
-//    		double f = Double.parseDouble(str.replace("T", ""));
             double f = new BigDecimal(str.replace("T", "")).doubleValue();
             result = f * 1024;
         } else if (str.contains("G")) {
             result = new BigDecimal(str.replace("G", "")).doubleValue();
-//    		result = Double.parseDouble(str.replace("G", ""));
-
         }
         return formatDouble(result, 2);
     }

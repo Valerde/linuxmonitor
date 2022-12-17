@@ -7,13 +7,10 @@ package com.sovava.utils;
  */
 public class StaticKeys {
 
-    public static String SPLIT_BR = "</br>";//换行标识
+    public static String SPLIT_BR = "</br>";
 
-    public static String SPLIT_KG = " ";//空格
+    public static String SPLIT_SPACE = " ";
 
-    public static String SPLIT_DH = ",";//逗号
-
-    public static String SPLIT_SXG = "//";//双反斜杠
-
+    public static String SPLIT_COMMA = ",";
 
 }

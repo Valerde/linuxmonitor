@@ -5,16 +5,12 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * <p>Title:NetIoState </p>
- * <p>Description:网络设备的吞吐率 </p>
+ * Title:NetIoState <br>
+ * Description:网络设备的吞吐率
  */
-
 @Data
 public class NetIoState implements Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -8314012397341825158L;
+
 
 
     /**

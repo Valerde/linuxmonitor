@@ -9,24 +9,19 @@ import java.io.Serializable;
  */
 @Data
 public class MemState implements Serializable {
-    /**
-     *
-     */
-    private static final long serialVersionUID = -1412473355088780549L;
-
 
     /**
-     * 总计内存，M
+     * 总计内存，MB
      */
     private String total;
 
     /**
-     * 已使用多少，M
+     * 已使用多少，MB
      */
     private String used;
 
     /**
-     * 未使用，M
+     * 未使用，MB
      */
     private String free;
 

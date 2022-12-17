@@ -145,9 +145,9 @@
                     document.querySelector("#irq").innerText = message.data.cpuState.irq;
                     document.querySelector("#soft").innerText = message.data.cpuState.soft;
 
-                    document.querySelector("#size").innerText = message.data.deskState.size;
-                    document.querySelector("#used1").innerText = message.data.deskState.used;
-                    document.querySelector("#usePerDesk").innerText = message.data.deskState.usePer;
+                    document.querySelector("#size").innerText = message.data.diskState.size;
+                    document.querySelector("#used1").innerText = message.data.diskState.used;
+                    document.querySelector("#usePerDesk").innerText = message.data.diskState.usePer;
 
                     document.querySelector("#rs").innerText = message.data.diskIoState.rs;
                     document.querySelector("#ws").innerText = message.data.diskIoState.ws;
@@ -196,9 +196,6 @@
     <tr>
         <td align="center" class="biaoti" height="60">linux实时监测</td>
     </tr>
-    <tr>
-        <td align="right" height="25">2022年11月</td>
-    </tr>
 </table>
 
 <table width="100%" border="0" cellspacing="1" cellpadding="4" bgcolor="#cccccc" class="tabtop13" align="center">
@@ -207,32 +204,32 @@
         <td colspan="7" class="btbg font-center titfont">CPU</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">cpuModel</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">CPU类型</td>
         <td id="cpuModel">&nbsp;</td>
     </tr>
     <tr>
-        <td colspan="2" class="btbg2 font-center">cpuNum</td>
+        <td colspan="2" class="btbg2 font-center">物理CPU数</td>
         <td id="cpuNum">&nbsp;</td>
 
     </tr>
     <tr>
-        <td colspan="2" class="btbg2 font-center">cpuPerCore</td>
+        <td colspan="2" class="btbg2 font-center">单个CPU核心数</td>
         <td id="cpuPerCore">&nbsp;</td>
     </tr>
     <tr>
-        <td colspan="2" class="btbg2 font-center">SystemRunningTime</td>
+        <td colspan="2" class="btbg2 font-center">系统运行时间</td>
         <td id="systemDays">&nbsp;</td>
     </tr>
     <tr>
-        <td colspan="2" class="btbg2 font-center">SystemRelease</td>
+        <td colspan="2" class="btbg2 font-center">系统发行版本</td>
         <td id="systemRelease">&nbsp;</td>
     </tr>
     <tr>
-        <td colspan="2" class="btbg2 font-center">SystemVersion</td>
+        <td colspan="2" class="btbg2 font-center">系统详细版本</td>
         <td id="systemVersion">&nbsp;</td>
     </tr>
     <tr>
-        <td colspan="2" class="btbg2 font-center">passFileInfo</td>
+        <td colspan="2" class="btbg2 font-center">密码更改时间</td>
         <td id="passFileInfo">&nbsp;</td>
     </tr>
 </table>
@@ -242,7 +239,7 @@
         <td colspan="7" class="btbg font-center titfont">内存</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">cpuState</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">CPU资源信息</td>
         <td colspan="2" class="btbg3" align="center">用户态的CPU时间（%）</td>
         <td class="btbg3" align="center">系统（内核）时间（%）</td>
         <td class="btbg3" align="center">空闲时间（idle）（%）</td>
@@ -260,7 +257,7 @@
         <td id="soft" align="center">&nbsp;</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">deskState</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">磁盘使用信息</td>
         <td colspan="2" class="btbg3" align="center">分区大小（GB）</td>
         <td colspan="2" class="btbg3" align="center">已使用（GB）</td>
         <td colspan="3" class="btbg3" align="center">已使用百分比（%）</td>
@@ -273,7 +270,7 @@
         <td colspan="3" id="usePerDesk" align="center">&nbsp;</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">diskIoState</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">磁盘IO信息</td>
         <td class="btbg3" align="center">每秒读次数</td>
         <td class="btbg3" align="center">每秒写次数</td>
         <td class="btbg3" align="center">rkBS（千字节）</td>
@@ -294,7 +291,7 @@
         <td id="util" align="center">&nbsp;</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">memState</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">内存资源信息</td>
         <td colspan="2" class="btbg3" align="center">总计内存（MB）</td>
         <td colspan="2" class="btbg3" align="center">已使用内存（MB）</td>
         <td colspan="2" class="btbg3" align="center">未使用内存（MB）</td>
@@ -309,7 +306,7 @@
         <td colspan="1" id="usePer" align="center">&nbsp;</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">netIoState</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">网络IO信息</td>
         <td colspan="2" class="btbg3" align="center">rxpck（每秒钟接收的数据包）</td>
         <td class="btbg3" align="center">txpck（每秒钟发送的数据包）</td>
         <td class="btbg3" align="center">rxbyt（每秒钟接收的KB数）</td>
@@ -328,7 +325,7 @@
         <td id="txcmp" align="center">&nbsp;</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">sysLoadState</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">系统负载情况</td>
         <td colspan="2" class="btbg3" align="center">1分钟之前到现在的负载</td>
         <td colspan="2" class="btbg3" align="center">5分钟之前到现在的负载</td>
         <td colspan="2" class="btbg3" align="center">15分钟之前到现在的负载</td>
@@ -343,7 +340,7 @@
         <td colspan="1" id="users" align="center">&nbsp;</td>
     </tr>
     <tr>
-        <td width="20%" colspan="2" class="btbg2 font-center">tcpState</td>
+        <td width="20%" colspan="2" class="btbg2 font-center">tcp信息</td>
         <td colspan="2" class="btbg3" align="center">active（每秒本地发起的TCP连接数）</td>
         <td colspan="2" class="btbg3" align="center">passive（每秒远程发起的TCP连接数）</td>
         <td colspan="2" class="btbg3" align="center">isegs（每秒接受的段）</td>

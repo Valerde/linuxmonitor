@@ -5,7 +5,7 @@ package com.sovava.utils;
  * <p>Title:LinuxCmd </p>
  * <p>Description: LINUX命令</p>
  */
-public class LinuxCmd {
+public class CMD {
 
     public static final String VIEW_MEM = "free -m";//查看内存状态
 
@@ -39,15 +39,8 @@ public class LinuxCmd {
     //查看系统负载状态
     public static final String UPTIME = "uptime";
 
-    //根据PID查看进程状态
-    public static final String dd = "ps aux|head -1;ps aux|grep {pid}";
-    //看rpc服务开放
-    public static final String rpcinfo = "rpcinfo -p";
-    //检查系统内核模块
-    public static final String lsmod = "lsmod";
     //查看passwd文件修改时间
     public static final String passwd_update_time = "ls -l /etc/passwd";
-    //查看计划任务
-    public static final String crontab = "cat /etc/crontab";
+
 
 }

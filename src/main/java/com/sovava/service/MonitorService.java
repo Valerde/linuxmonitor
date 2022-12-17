@@ -5,15 +5,14 @@ import com.sovava.pojo.*;
 public interface MonitorService {
     CpuState getCpuState();
 
-    DeskState getDeskState();
+    DiskState getDiskState();
 
-    DiskIoState getDiskState();
+    DiskIoState getDiskIoState();
 
     MemState getMemState();
 
     NetIoState getNetIoState();
 
-    ProcessState getProcessState(String pid);
 
     TcpState getTcpState();
 

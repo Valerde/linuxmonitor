@@ -5,16 +5,13 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * <p>Title:SysLoadState </p>
- * <p>Description: uptime查看系统负载状态</p>
+ * Title:SysLoadState <br>
+ * Description: uptime查看系统负载状态
  */
 @Data
 public class SysLoadState implements Serializable {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -4863071148000213553L;
+
 
 
     /**

@@ -8,13 +8,8 @@ import java.io.Serializable;
  * 查看磁盘情况
  */
 @Data
-public class DeskState implements Serializable {
+public class DiskState implements Serializable {
 
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 879979812204191283L;
 
     /**
      * 分区大小

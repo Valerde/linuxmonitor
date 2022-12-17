@@ -26,14 +26,12 @@ class MonitorApplicationTests {
         log.debug("系统版本信息：{}" , monitorService.getSystemRelease());
         log.debug("系统版本详细信息：{}" , monitorService.getSystemUname());
         log.debug("cpu Idle使用率：{}" , monitorService.getCpuState());
-        log.debug("磁盘已使用G：{}" , monitorService.getDeskState());
-        log.debug("磁盘IO状态：{}" , monitorService.getDiskState());
+        log.debug("磁盘已使用G：{}" , monitorService.getDiskState());
+        log.debug("磁盘IO状态：{}" , monitorService.getDiskIoState());
         log.debug("内存已使用百分比：{}" , monitorService.getMemState());
         log.debug("网络吞吐率rxbyt：{}" , monitorService.getNetIoState());
         log.debug("系统一分钟负载：{}" , monitorService.getSysLoadState());
         log.debug("系统TCP active：{}" , monitorService.getTcpState());
-//        log.debug("进程2696内存使用率：{}" , monitorService.getProcessState("1217").getMemPer());
-
         log.debug("系统密码文件修改时间：{}" , monitorService.getPasswdFileInfo());
 
     }

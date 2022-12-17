@@ -14,9 +14,16 @@ import java.io.InputStreamReader;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.lang.Double.parseDouble;
 
 @Service
 public class MonitorServiceImpl implements MonitorService {
+
+    private static final String COMMAND_NOT = "command not found";
+
 
     @Autowired
     private ThreadPoolExecutor executor;
@@ -52,10 +59,10 @@ public class MonitorServiceImpl implements MonitorService {
             allState.setCpuState(getCpuState());
         }, executor);
         CompletableFuture<Void> deskFuture = CompletableFuture.runAsync(() -> {
-            allState.setDeskState(getDeskState());
+            allState.setDiskState(getDiskState());
         }, executor);
         CompletableFuture<Void> diskFuture = CompletableFuture.runAsync(() -> {
-            allState.setDiskIoState(getDiskState());
+            allState.setDiskIoState(getDiskIoState());
         }, executor);
         CompletableFuture<Void> memFuture = CompletableFuture.runAsync(() -> {
             allState.setMemState(getMemState());
@@ -81,54 +88,226 @@ public class MonitorServiceImpl implements MonitorService {
 
     @Override
     public CpuState getCpuState() {
-        return LinuxStrUtil.setCpuState(doCommond(LinuxCmd.VMSTAT));
+
+        String cpuResult = doCommond(CMD.VMSTAT);
+
+        if (StringUtils.isEmpty(cpuResult) || cpuResult.contains(COMMAND_NOT)) {
+            return null;
+        }
+
+        cpuResult = cpuResult.trim();
+        CpuState cpuState = new CpuState();
+        String[] rows = cpuResult.split(StaticKeys.SPLIT_BR);
+        String row = "";
+        String[] cols = null;
+        for (int i = 1; i < rows.length; i++) {
+            row = FormatUtil.replaceKg(rows[i]);
+            cols = row.split(StaticKeys.SPLIT_SPACE);
+            if (cols[0].contains(":")) {
+                row = FormatUtil.replaceKg(rows[i]);
+                cols = row.split(StaticKeys.SPLIT_SPACE);
+                cpuState.setUser(cols[2]);
+                cpuState.setSys(cols[4]);
+                cpuState.setIowait(cols[5]);
+                cpuState.setIrq(cols[6]);
+                cpuState.setSoft(cols[7]);
+                cpuState.setIdle(cols[11]);
+                break;
+            }
+        }
+
+        return cpuState;
     }
 
     @Override
-    public DeskState getDeskState() {
-        return LinuxStrUtil.setDfHl(doCommond(LinuxCmd.DF_HL));
+    public DiskState getDiskState() {
+        String diskResult = doCommond(CMD.DF_HL);
+        if (StringUtils.isEmpty(diskResult)) {
+            return null;
+        }
+        diskResult = diskResult.trim();
+        DiskState diskState = new DiskState();
+        String[] rows = diskResult.split(StaticKeys.SPLIT_BR);
+        String row = "";
+        double sumPer = 0;
+        double sumCon = 0;
+        double sumUsed = 0;
+        //TO DO 此地的计算方法有误
+        for (int i = 1; i < rows.length; i++) {
+            row = FormatUtil.replaceKg(rows[i]);
+            if (row.contains("/dev/")) {
+                sumCon += FormatUtil.mToG(row.split(StaticKeys.SPLIT_SPACE)[1]);
+                sumUsed += FormatUtil.mToG(row.split(StaticKeys.SPLIT_SPACE)[2]);
+            }
+        }
+        sumPer = (sumUsed / sumCon) * 100;
+        diskState.setUsePer(FormatUtil.formatDouble(sumPer, 2) + "");
+        diskState.setSize(FormatUtil.formatDouble(sumCon, 2) + "");
+        diskState.setUsed(FormatUtil.formatDouble(sumUsed, 2) + "");
+
+        return diskState;
     }
 
     @Override
-    public DiskIoState getDiskState() {
-        return LinuxStrUtil.setDiskIo(doCommond(LinuxCmd.DISK_IO));
+    public DiskIoState getDiskIoState() {
+        String diskIoResult = doCommond(CMD.DISK_IO);
+        if (StringUtils.isEmpty(diskIoResult) || diskIoResult.contains(COMMAND_NOT)) {
+            return null;
+        }
+        diskIoResult = diskIoResult.trim();
+        DiskIoState diskIoState = new DiskIoState();
+        String[] rows = diskIoResult.split(StaticKeys.SPLIT_BR);
+        String[] cols = null;
+        String row = "";
+        double rs = 0;
+        double ws = 0;
+        double rkBS = 0;
+        double wkBS = 0;
+        double await = 0;
+        double avgquSz = 0;
+        double util = 0;
+        for (int i = 4; i < rows.length; i++) {
+            row = FormatUtil.replaceKg(rows[i]);
+            cols = row.split(StaticKeys.SPLIT_SPACE);
+            rs = Double.parseDouble(cols[3].trim()) + rs;
+            ws = Double.parseDouble(cols[4].trim()) + ws;
+            rkBS = Double.parseDouble(cols[5].trim()) + rkBS;
+            wkBS = Double.parseDouble(cols[6].trim()) + wkBS;
+            avgquSz = Double.parseDouble(cols[8].trim()) + avgquSz;
+            await = Double.parseDouble(cols[9].trim()) + await;
+            util = Double.parseDouble(cols[cols.length - 1].trim()) + util;
+        }
+        rs = rs / (rows.length - 1);
+        ws = ws / (rows.length - 1);
+        rkBS = rkBS / (rows.length - 1);
+        wkBS = wkBS / (rows.length - 1);
+        avgquSz = avgquSz / (rows.length - 1);
+        await = await / (rows.length - 1);
+        util = util / (rows.length - 1);
+        diskIoState.setRs(FormatUtil.formatDouble(rs, 2) + "");
+        diskIoState.setWs(FormatUtil.formatDouble(ws, 2) + "");
+        diskIoState.setRkBS(FormatUtil.formatDouble(rkBS, 2) + "");
+        diskIoState.setWkBS(FormatUtil.formatDouble(wkBS, 2) + "");
+        diskIoState.setAvgquSz(FormatUtil.formatDouble(avgquSz, 2) + "");
+        diskIoState.setAwait(FormatUtil.formatDouble(await, 2) + "");
+        diskIoState.setUtil(FormatUtil.formatDouble(util, 2) + "");
+
+        return diskIoState;
     }
 
     @Override
     public MemState getMemState() {
-        return LinuxStrUtil.setViewMem(doCommond(LinuxCmd.VIEW_MEM));
+        String memResult = doCommond(CMD.VIEW_MEM);
+        if (StringUtils.isEmpty(memResult)) {
+            return null;
+        }
+        memResult = memResult.trim();
+        MemState memState = new MemState();
+        String[] rows = memResult.split(StaticKeys.SPLIT_BR);
+        String row = "";
+        for (int i = 1; i < 2; i++) {
+            row = FormatUtil.replaceKg(rows[i]);
+            memState.setTotal(row.split(StaticKeys.SPLIT_SPACE)[1]);
+            memState.setUsed(row.split(StaticKeys.SPLIT_SPACE)[2]);
+            memState.setFree(row.split(StaticKeys.SPLIT_SPACE)[6]);
+        }
+        try {
+            double totalMem = parseDouble(memState.getTotal());
+            double usedMem = parseDouble(memState.getUsed());
+            double usedPer = (usedMem / totalMem) * 100;
+            memState.setUsePer(FormatUtil.formatDouble(usedPer, 1) + "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return memState;
     }
 
     @Override
     public NetIoState getNetIoState() {
-        return LinuxStrUtil.setNetIo(doCommond(LinuxCmd.SAR_DEV_1));
-    }
+        String netIoResult = doCommond(CMD.SAR_DEV_1);
 
-    @Override
-    public ProcessState getProcessState(String pid) {
-        String processStr = doCommond(LinuxCmd.dd.replace("{pid}", pid));
-        processStr = conProcessStr(processStr, pid);
-        String[] appStateStr = null;
-        if (!StringUtils.isEmpty(processStr)) {
-            appStateStr = processStr.split(StaticKeys.SPLIT_KG);
-            if (appStateStr.length > 1) {
-                ProcessState processState = new ProcessState();
-                processState.setCpuPer(appStateStr[0]);
-                processState.setMemPer(appStateStr[1]);
-                return processState;
+        if (StringUtils.isEmpty(netIoResult) || netIoResult.contains(COMMAND_NOT)) {
+            return null;
+        }
+
+        netIoResult = netIoResult.trim();
+        NetIoState netIoState = new NetIoState();
+        String[] rows = netIoResult.split(StaticKeys.SPLIT_BR);
+        String row = "";
+        String[] cols = null;
+        double rxpck = 0;
+        double txpck = 0;
+        double rxbyt = 0;//rxkB/s
+        double txbyt = 0;//txkB/s
+        double rxcmp = 0;
+        double txcmp = 0;
+        for (int i = 1; i < rows.length; i++) {
+            row = FormatUtil.replaceKg(rows[i]);
+            cols = row.split(StaticKeys.SPLIT_SPACE);
+            if (cols[0].contains(":") && (cols[1].contains("ens") || cols[1].contains("eth"))) {
+                rxpck = parseDouble(cols[2].trim()) + rxpck;
+                txpck = parseDouble(cols[3].trim()) + txpck;
+                rxbyt = parseDouble(cols[4].trim()) + rxbyt;
+                txbyt = Double.parseDouble(cols[5].trim()) + txbyt;
+                rxcmp = Double.parseDouble(cols[6].trim()) + rxcmp;
+                txcmp = Double.parseDouble(cols[7].trim()) + txcmp;
             }
         }
-        return null;
+        netIoState.setRxpck(FormatUtil.formatDouble(rxpck, 2) + "");
+        netIoState.setTxpck(FormatUtil.formatDouble(txpck, 2) + "");
+        netIoState.setRxbyt(FormatUtil.formatDouble(rxbyt, 2) + "");//rxkB/s
+        netIoState.setTxbyt(FormatUtil.formatDouble(txbyt, 2) + "");//txkB/s
+        netIoState.setRxcmp(FormatUtil.formatDouble(rxcmp, 2) + "");
+        netIoState.setTxcmp(FormatUtil.formatDouble(txcmp, 2) + "");
+        return netIoState;
     }
+
 
     @Override
     public TcpState getTcpState() {
-        return LinuxStrUtil.setTcp(doCommond(LinuxCmd.SAR_TCP_1));
+        String tcpResult = doCommond(CMD.SAR_TCP_1);
+
+        if (StringUtils.isEmpty(tcpResult) || tcpResult.contains(COMMAND_NOT)) {
+            return null;
+        }
+
+        tcpResult = tcpResult.trim();
+        TcpState tcpState = new TcpState();
+        String[] rows = tcpResult.split(StaticKeys.SPLIT_BR);
+        String row = "";
+        String[] cols = null;
+        if (rows.length > 1) {
+            row = FormatUtil.replaceKg(rows[rows.length - 1]);
+            cols = row.split(StaticKeys.SPLIT_SPACE);
+            if (cols[0].contains(":")) {
+                tcpState.setActive(cols[1]);
+                tcpState.setPassive(cols[2]);
+                tcpState.setIsegs(cols[3]);
+                tcpState.setOseg(cols[4]);
+            }
+        }
+        return tcpState;
     }
 
     @Override
     public SysLoadState getSysLoadState() {
-        return LinuxStrUtil.setSysLoad(doCommond(LinuxCmd.UPTIME));
+        String loadResult = doCommond(CMD.UPTIME);
+        if (StringUtils.isEmpty(loadResult)) {
+            return null;
+        }
+        String users = "0";
+        String average = "average:";
+        int userIndex = loadResult.indexOf("user");
+        users = loadResult.substring(0, userIndex).substring(userIndex - 2);
+        SysLoadState loadState = new SysLoadState();
+        String minLoad = loadResult.substring(loadResult.indexOf(average) + average.length());
+        String[] cols = minLoad.split(StaticKeys.SPLIT_COMMA);
+        loadState.setUsers(users.replace(StaticKeys.SPLIT_SPACE, ""));
+        loadState.setOneLoad(cols[0].replace(StaticKeys.SPLIT_COMMA, "").replace(StaticKeys.SPLIT_SPACE, ""));
+        loadState.setFiveLoad(cols[1].replace(StaticKeys.SPLIT_COMMA, "").replace(StaticKeys.SPLIT_SPACE, ""));
+        loadState.setFifteenLoad(cols[2].replace(StaticKeys.SPLIT_COMMA, "").replace(StaticKeys.SPLIT_SPACE, ""));
+        return loadState;
     }
 
 
@@ -139,7 +318,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public String getSystemRelease() {
-        return doCommond(LinuxCmd.SYSTEM_RELEASE).replace(" \\n \\l</br>", "");
+        return doCommond(CMD.SYSTEM_RELEASE).replace(" \\n \\l</br>", "");
     }
 
 
@@ -150,7 +329,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public String getSystemUname() {
-        return doCommond(LinuxCmd.UNAME_A);
+        return doCommond(CMD.UNAME_A);
     }
 
     /**
@@ -160,7 +339,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public String getCpuNum() {
-        return doCommond(LinuxCmd.WULI_CPU_NUM);
+        return doCommond(CMD.WULI_CPU_NUM);
     }
 
 
@@ -171,7 +350,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public String getCpuPerCores() {
-        String str = doCommond(LinuxCmd.WULI_CPU_CORE_NUM);
+        String str = doCommond(CMD.WULI_CPU_CORE_NUM);
         if (!StringUtils.isEmpty(str)) {
             return str.substring(str.length() - 1);
         }
@@ -186,7 +365,31 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public String getSystemDays() {
-        return LinuxStrUtil.getYxDays(doCommond(LinuxCmd.UPTIME));
+        String runDaysResult = doCommond(CMD.UPTIME);
+
+        if (StringUtils.isEmpty(runDaysResult)) {
+            return null;
+        }
+        String days = "";
+        Pattern pattern = Pattern.compile("up.*days");
+        Matcher matchs = pattern.matcher(runDaysResult.toLowerCase());
+        Pattern pattern2 = Pattern.compile("up.*day");
+        Matcher match = pattern2.matcher(runDaysResult.toLowerCase());
+        if (matchs.find()) {
+            days = matchs.group();
+            days = days.replace("up", "").replace("days", "");
+            days += "days";
+        } else if (match.find()) {
+            days = match.group();
+            days = days.replace("up", "").replace("day", "");
+            days += "day";
+        } else {
+            int upIndex = runDaysResult.indexOf("up");
+            int dzhcIndex = runDaysResult.indexOf(",", upIndex);
+            days = runDaysResult.substring(upIndex + 2, dzhcIndex) + "hours";
+        }
+
+        return days.replace(StaticKeys.SPLIT_SPACE, "");
     }
 
     /**
@@ -196,7 +399,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public String getCpuModel() {
-        String result = doCommond(LinuxCmd.CPU_XINGHAO);
+        String result = doCommond(CMD.CPU_XINGHAO);
         if (!StringUtils.isEmpty(result)) {
             return result.trim();
         } else {
@@ -211,7 +414,7 @@ public class MonitorServiceImpl implements MonitorService {
      */
     @Override
     public String getPasswdFileInfo() {
-        String passwdFile = doCommond(LinuxCmd.passwd_update_time);
+        String passwdFile = doCommond(CMD.passwd_update_time);
         passwdFile = passwdFile.substring(23, 23 + 18);
         return passwdFile;
     }
@@ -226,7 +429,7 @@ public class MonitorServiceImpl implements MonitorService {
         String row = "";
         for (int i = 1; i < rows.length; i++) {
             row = FormatUtil.replaceKg(rows[i]);
-            cols = row.split(StaticKeys.SPLIT_KG);
+            cols = row.split(StaticKeys.SPLIT_SPACE);
             if (pid.equals(cols[1])) {
                 return cols[2] + " " + cols[3];
             }

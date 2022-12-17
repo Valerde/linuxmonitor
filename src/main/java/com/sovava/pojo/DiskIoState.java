@@ -10,10 +10,7 @@ import java.io.Serializable;
 @Data
 public class DiskIoState implements Serializable{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8284741180883299533L;
+
 
 
 	/**
@@ -27,12 +24,12 @@ public class DiskIoState implements Serializable{
     private String ws;
     
     /**
-	 *每秒读数据量（千字节）
+	 *读数据量 kb/s
 	 */
     private String rkBS;
     
     /**
-   	 * 每秒写数据量（千字节）
+   	 * 写数据量（kb/s
    	 */
     private String wkBS;
     

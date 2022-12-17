@@ -2,16 +2,19 @@ package com.sovava.pojo;
 
 import lombok.Data;
 
+/**
+ * 系统相关信息
+ */
 @Data
 public class SystemInfo {
 
     /**
-     * "CPU型号信息："
+     * CPU型号信息
      */
     private String cpuModel;
 
     /**
-     * "物理CPU个数：
+     * 物理CPU个数
      */
     private String cpuNum;
     /**

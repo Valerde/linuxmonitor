@@ -25,14 +25,14 @@ public class MonitorController {
 
     @GetMapping("/desk")
     public R getDesk() {
-        DeskState deskState = monitorService.getDeskState();
-        return R.ok().setData(deskState);
+        DiskState diskState = monitorService.getDiskState();
+        return R.ok().setData(diskState);
     }
 
-    @GetMapping("/disk")
-    public R getDisk() {
-        DiskIoState diskState = monitorService.getDiskState();
-        return R.ok().setData(diskState);
+    @GetMapping("/diskIo")
+    public R getDiskIo() {
+        DiskIoState diskIoState = monitorService.getDiskIoState();
+        return R.ok().setData(diskIoState);
     }
 
     @GetMapping("/mem")

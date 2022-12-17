@@ -9,11 +9,7 @@ import java.io.Serializable;
  */
 @Data
 public class CpuState implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2913111613773445949L;
+
 
 	/**
 	 * 用户态的CPU时间（%）
